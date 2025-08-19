@@ -1,0 +1,53 @@
+name = "ecommerce-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "ecommerce-api"
+
+[env.development]
+name = "ecommerce-api-dev"
+
+# KV命名空间配置 - 已创建的真实资源ID
+[[kv_namespaces]]
+binding = "PRODUCTS_KV"
+id = "c809ad091b4346b89b16c7e2444d352d"
+preview_id = "51b04c75aefb42f0b0ed59c4cbe4b3c2"
+
+[[kv_namespaces]]
+binding = "ORDERS_KV"
+id = "1067b261393145e2a8a022ba1410a30a"
+preview_id = "b9fa9d305f6c476bb1081f1596e634ef"
+
+[[kv_namespaces]]
+binding = "USERS_KV"
+id = "afeb736eeebf40ccb075417b55603ad0"
+preview_id = "8e487a5ab48a4b0bb2837a49c59b3900"
+
+# D1数据库配置 - 已创建的真实资源ID
+[[d1_databases]]
+binding = "DB"
+database_name = "ecommerce-db"
+database_id = "0bd1dee9-fca8-4140-ba3b-aed1fa293fcc"
+
+# R2存储配置 - 需要手动启用R2服务
+# 请先在Cloudflare Dashboard中启用R2服务
+# [[r2_buckets]]
+# binding = "IMAGES"
+# bucket_name = "ecommerce-images"
+
+# 环境变量
+[vars]
+ENVIRONMENT = "development"
+CORS_ORIGIN = "http://localhost:5173"
+
+# 生产环境变量（需要通过wrangler secret设置）
+# ALIPAY_APP_ID
+# ALIPAY_PRIVATE_KEY
+# ALIPAY_PUBLIC_KEY
+# WECHAT_APP_ID
+# WECHAT_MCH_ID
+# WECHAT_API_KEY
+# AIRWALLEX_API_KEY
+# AIRWALLEX_WEBHOOK_SECRET
+# JWT_SECRET
