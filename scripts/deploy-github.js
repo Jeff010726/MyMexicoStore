@@ -1,10 +1,10 @@
 import { writeFileSync, existsSync, copyFileSync } from 'fs';
-import { resolve, join } from 'path';
+import { resolve, join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 // 获取当前文件的目录
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 // 确保dist目录存在
 const distDir = resolve(__dirname, '../dist');
