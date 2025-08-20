@@ -28,6 +28,9 @@ jobs:
       env:
         VITE_API_BASE_URL: https://ecommerce-api.jeff010726bd.workers.dev
         
+    - name: Create .nojekyll file
+      run: touch ./dist/.nojekyll
+        
     - name: Setup Pages
       uses: actions/configure-pages@v4
       

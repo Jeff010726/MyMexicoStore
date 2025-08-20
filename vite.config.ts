@@ -14,6 +14,8 @@ export default defineConfig({
   },
   // 性能优化配置
   build: {
+    // 确保生成.nojekyll文件
+    emptyOutDir: true,
     // 代码分割优化
     rollupOptions: {
       output: {
@@ -21,14 +23,7 @@ export default defineConfig({
           // 将React相关库打包到单独的chunk
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           // 将UI组件库打包到单独的chunk
-          'ui-vendor': ['lucide-react'],
-          // 将管理后台相关组件打包到单独的chunk
-          'admin': [
-            './src/pages/admin/Dashboard',
-            './src/pages/admin/ProductManagement',
-            './src/pages/admin/OrderManagement',
-            './src/pages/admin/CustomerManagement'
-          ]
+          'ui-vendor': ['lucide-react']
         }
       }
     },
