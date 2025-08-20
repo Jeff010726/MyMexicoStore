@@ -16,14 +16,20 @@ const app = new Hono<{ Bindings: Env }>();
 app.use('*', cors({
   origin: (origin, c) => {
     const allowedOrigins = [
-      c.env.CORS_ORIGIN,
-      'https://your-domain.github.io',
-      'https://your-custom-domain.com'
-    ];
+      'https://jeff010726.github.io',
+      'http://localhost:5173',
+      'http://localhost:3000',
+      c.env.CORS_ORIGIN
+    ].filter(Boolean);
+    
+    // 如果没有origin（比如直接API调用），允许访问
+    if (!origin) return true;
+    
+    // 检查是否在允许列表中
     return allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
   },
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
 }));
 
