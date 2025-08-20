@@ -20,7 +20,7 @@ import Login from './pages/admin/Login';
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <Router>
+      <Router basename="/MyMexicoStore">
         <div className="min-h-screen bg-background flex flex-col">
           <Routes>
             {/* 管理后台登录路由 */}
@@ -36,7 +36,10 @@ function App() {
               <Route path="editor" element={<PageEditor />} />
             </Route>
 
-            {/* 前台路由 */}
+            {/* 动态页面路由 - 独立布局，不显示Header/Footer */}
+            <Route path="/page/:templateId" element={<DynamicPage />} />
+
+            {/* 前台路由 - 带Header和Footer */}
             <Route path="/*" element={
               <>
                 <Header />
@@ -47,8 +50,6 @@ function App() {
                     <Route path="/products/:id" element={<ProductDetail />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/payment/success" element={<PaymentSuccess />} />
-                    {/* 动态页面路由 - 独立布局，不显示Header/Footer */}
-                    <Route path="/page/:templateId" element={<DynamicPage />} />
                   </Routes>
                 </main>
                 <Footer />
