@@ -8,15 +8,17 @@
     <!-- GitHub Pages SPA重定向解决方案 -->
     <script type="text/javascript">
       (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).join('?');
+        // 检查是否有重定向参数
+        var urlParams = new URLSearchParams(l.search);
+        var redirectPath = urlParams.get('p');
+        
+        if (redirectPath) {
+          // 解码路径并更新浏览器历史
+          var decodedPath = decodeURIComponent(redirectPath);
+          var newPath = '/MyMexicoStore' + decodedPath;
           
-          // 构建正确的路径
-          var newPath = '/MyMexicoStore' + decoded.replace('?/', '/');
-          
-          window.history.replaceState(null, null, newPath + l.hash);
+          // 使用replaceState更新URL，不会触发页面重新加载
+          window.history.replaceState(null, null, newPath);
         }
       }(window.location))
     </script>
