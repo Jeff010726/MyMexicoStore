@@ -47,6 +47,9 @@ const LoadingSpinner = () => (
 
 // 错误回退组件
 const ErrorFallback = ({ error, resetError }: { error: Error; resetError: () => void }) => {
+  // 使用error参数，避免TypeScript警告
+  console.error("捕获到错误:", error.message);
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="text-center">
