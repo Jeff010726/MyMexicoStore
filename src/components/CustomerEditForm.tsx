@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, User, Mail, Phone, MapPin } from 'lucide-react';
+import { X, Save, User, Mail, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -34,7 +34,8 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({
   isOpen,
   onClose,
   onSave,
-  isNew = false
+  isNew = false,
+  saving = false
 }) => {
   const [formData, setFormData] = useState<Customer>(
     customer || {
@@ -55,7 +56,6 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({
   );
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
     if (customer) {
@@ -163,7 +163,7 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 p-1"
-              disabled={loading}
+              disabled={saving}
             >
               <X size={20} />
             </button>

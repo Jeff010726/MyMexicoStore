@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Plus, Trash2, Eye, Settings, Move, Copy } from 'lucide-react';
+import { X, Save, Plus, Trash2, Eye, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import PropertyEditor from './PropertyEditor';
 
 interface ComponentConfig {

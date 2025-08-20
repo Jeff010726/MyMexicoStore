@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Plus, Eye, Edit, Trash2, Copy, Download, Upload, Layers, Save, FileText, ExternalLink } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Plus, Eye, Edit, Trash2, Copy, Layers, Save, FileText, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -24,7 +24,7 @@ const TemplateManagement = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const [showCreateForm, setShowCreateForm] = useState(false);
+  // const showCreateForm = false; // 暂时注释掉未使用的变量
   const [selectedTemplate, setSelectedTemplate] = useState<PageTemplate | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showEditor, setShowEditor] = useState(false);

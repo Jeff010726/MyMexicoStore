@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Truck, Shield, Headphones } from 'lucide-react';
 

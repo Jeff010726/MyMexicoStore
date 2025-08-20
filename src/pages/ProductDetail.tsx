@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Award, Users, Clock } from 'lucide-react';
 import { useStore } from '../store/useStore';
@@ -312,7 +312,7 @@ const ProductDetail = () => {
               {Object.entries(product.specifications).map(([key, value]) => (
                 <div key={key} className="flex">
                   <span className="w-24 text-sm font-medium text-gray-500">{key}:</span>
-                  <span className="text-sm text-gray-900">{value}</span>
+                  <span className="text-sm text-gray-900">{String(value)}</span>
                 </div>
               ))}
             </div>

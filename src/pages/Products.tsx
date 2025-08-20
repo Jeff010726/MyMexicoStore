@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Filter, Search, Grid, List, Star } from 'lucide-react';
+import { ShoppingCart, Search, Grid, List, Star } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 const Products = () => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCard, Store, Building, Loader2, CheckCircle, XCircle } from 'lucide-react';
 
 interface PaymentMethod {
@@ -22,7 +22,7 @@ const AirwallexPayment = ({ orderId, amount, currency = 'MXN', onSuccess, onErro
   const [selectedMethod, setSelectedMethod] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [paymentIntentId, setPaymentIntentId] = useState<string>('');
-  const [clientSecret, setClientSecret] = useState<string>('');
+  const [, setClientSecret] = useState<string>('');
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'failed'>('idle');
   const [cardDetails, setCardDetails] = useState({
     number: '',
