@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-// 移除未使用的导入
-// import { performanceMonitor } from '../utils/performance';
+import { performanceMonitor } from '../utils/performance';
 
 interface Product {
   id: number;
@@ -28,9 +27,13 @@ const OptimizedProductCard = memo<OptimizedProductCardProps>(({
   onAddToCart
 }) => {
   const handleCardClick = () => {
+    // 记录用户交互性能
+    const startTime = performance.now();
+    
     // 预加载商品详情页面
     import('../pages/ProductDetail').then(() => {
-      // 性能监控已禁用
+      const loadTime = performance.now() - startTime;
+      performanceMonitor.recordMetric('PRODUCT_DETAIL_PRELOAD', loadTime);
     });
   };
 

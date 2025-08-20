@@ -8,6 +8,7 @@ import BottomNav from './components/BottomNav';
 import ProtectedRoute from './components/ProtectedRoute';
 import { CartProvider } from './contexts/CartContext';
 import { useAuth } from './hooks/useAuth';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // 懒加载页面组件 - 代码分割优化
 const Home = lazy(() => import('./pages/Home'));
@@ -44,11 +45,8 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// 导入错误边界组件
-import ErrorBoundary from './components/ErrorBoundary';
-
 // 错误回退组件
-const ErrorFallback = ({ resetError }: { error: Error; resetError: () => void }) => {
+const ErrorFallback = ({ error, resetError }: { error: Error; resetError: () => void }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="text-center">
