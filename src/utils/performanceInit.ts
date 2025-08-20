@@ -1,11 +1,15 @@
 // 性能监控初始化
 import { performanceMonitor } from './performance';
 import { cacheManager } from './cache';
+import ErrorHandler from './errorHandling';
 
 // 初始化性能监控
 export function initPerformanceMonitoring() {
   // 启动性能监控
   performanceMonitor.init();
+  
+  // 初始化错误处理器
+  ErrorHandler.init();
   
   // 监控页面加载性能
   window.addEventListener('load', () => {
