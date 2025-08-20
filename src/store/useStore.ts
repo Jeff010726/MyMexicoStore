@@ -14,6 +14,17 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string;
+  role: string;
+  addresses: any[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface StoreState {
   cart: CartItem[];
   addToCart: (product: Product) => void;
@@ -22,8 +33,10 @@ export interface StoreState {
   clearCart: () => void;
   products: Product[];
   setProducts: (products: Product[]) => void;
-  user: any;
-  setUser: (user: any) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  logout: () => void;
+  isAuthenticated: () => boolean;
 }
 
 export const useStore = create<StoreState>((set, get) => ({
@@ -82,7 +95,46 @@ export const useStore = create<StoreState>((set, get) => ({
   },
   
   user: null,
-  setUser: (user: any) => {
+  setUser: (user: User | null) => {
     set({ user });
+    if (user) {
+      localStorage.setItem('user_data', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user_data');
+    }
+  },
+  
+  logout: () => {
+    set({ user: null, cart: [] });
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_data');
+  },
+  
+  isAuthenticated: () => {
+    const { user } = get();
+    const token = localStorage.getItem('auth_token');
+    return !!(user && token);
   },
 }));
+
+// 初始化时从localStorage恢复用户状态
+const initializeStore = () => {
+  const userData = localStorage.getItem('user_data');
+  const token = localStorage.getItem('auth_token');
+  
+  if (userData && token) {
+    try {
+      const user = JSON.parse(userData);
+      useStore.getState().setUser(user);
+    } catch (error) {
+      console.error('Failed to restore user data:', error);
+      localStorage.removeItem('user_data');
+      localStorage.removeItem('auth_token');
+    }
+  }
+};
+
+// 在应用启动时初始化
+if (typeof window !== 'undefined') {
+  initializeStore();
+}

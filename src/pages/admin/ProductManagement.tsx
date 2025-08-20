@@ -196,6 +196,7 @@ const ProductManagement = () => {
     }
   };
 
+
   // 删除商品
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm('确定要删除这个商品吗？')) return;
@@ -213,6 +214,7 @@ const ProductManagement = () => {
       setError('删除商品失败');
     }
   };
+
 
   // 重置表单
   const resetForm = () => {

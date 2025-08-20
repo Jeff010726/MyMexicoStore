@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { ShoppingCart, User, Search, Heart } from 'lucide-react';
+import { ShoppingCart, User, Search, Heart, LogOut } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 const Header = () => {
-  const { cart } = useStore();
+  const { cart, user, logout } = useStore();
   const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -68,16 +68,51 @@ const Header = () => {
 
           {/* 用户操作 */}
           <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-700 hover:text-pink-600 transition-colors relative">
-              <Heart size={20} />
-              <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
-                0
-              </span>
-            </button>
+            {user && (
+              <Link to="/user?tab=favorites" className="p-2 text-gray-700 hover:text-pink-600 transition-colors relative">
+                <Heart size={20} />
+                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+                  0
+                </span>
+              </Link>
+            )}
             
-            <button className="p-2 text-gray-700 hover:text-pink-600 transition-colors">
-              <User size={20} />
-            </button>
+            {user ? (
+              <div className="relative group">
+                <button className="flex items-center space-x-1 p-2 text-gray-700 hover:text-pink-600 transition-colors">
+                  <User size={20} />
+                  <span className="hidden md:block text-sm">{user.name}</span>
+                </button>
+                <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="py-2">
+                    <Link to="/user" className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600">
+                      个人中心
+                    </Link>
+                    <Link to="/user?tab=orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600">
+                      我的订单
+                    </Link>
+                    <Link to="/user?tab=favorites" className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600">
+                      我的收藏
+                    </Link>
+                    <Link to="/user?tab=addresses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600">
+                      地址管理
+                    </Link>
+                    <div className="border-t border-gray-100 my-1"></div>
+                    <button 
+                      onClick={logout}
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
+                    >
+                      <LogOut size={16} className="mr-2" />
+                      退出登录
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Link to="/login" className="p-2 text-gray-700 hover:text-pink-600 transition-colors">
+                <User size={20} />
+              </Link>
+            )}
             
             <Link to="/cart" className="relative p-2 text-gray-700 hover:text-pink-600 transition-colors">
               <ShoppingCart size={20} />
@@ -109,10 +144,17 @@ const Header = () => {
               </span>
             )}
           </Link>
-          <button className="flex flex-col items-center py-2 px-3 text-gray-600 hover:text-pink-600">
-            <User size={16} />
-            <span className="text-xs">我的</span>
-          </button>
+          {user ? (
+            <Link to="/user" className="flex flex-col items-center py-2 px-3 text-gray-600 hover:text-pink-600">
+              <User size={16} />
+              <span className="text-xs">我的</span>
+            </Link>
+          ) : (
+            <Link to="/login" className="flex flex-col items-center py-2 px-3 text-gray-600 hover:text-pink-600">
+              <User size={16} />
+              <span className="text-xs">登录</span>
+            </Link>
+          )}
         </div>
       </div>
     </header>

@@ -74,6 +74,7 @@ export const useAuth = () => {
     logout,
     hasPermission,
     isAuthenticated,
+    isLoggedIn: !!user,
     checkAuth
   };
 };

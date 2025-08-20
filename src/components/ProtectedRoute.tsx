@@ -5,11 +5,12 @@ import { useAuth } from '../hooks/useAuth';
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredPermission?: string;
+  requireAdmin?: boolean;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
-  requiredPermission 
+  requiredPermission,
 }) => {
   const { user, loading, hasPermission } = useAuth();
   const location = useLocation();

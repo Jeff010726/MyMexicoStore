@@ -64,31 +64,31 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 text-orange-300">💝 贴心服务</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors flex items-center">
+                <Link to="/contact" className="text-gray-400 hover:text-white transition-colors flex items-center">
                   <Phone size={16} className="mr-2" />
-                  在线客服
-                </a>
+                  联系我们
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors flex items-center">
+                <a href="mailto:info@aimorelogy.com" className="text-gray-400 hover:text-white transition-colors flex items-center">
                   <Mail size={16} className="mr-2" />
-                  邮件咨询
+                  info@aimorelogy.com
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  🔄 7天无理由退货
-                </a>
+                <Link to="/faq" className="text-gray-400 hover:text-white transition-colors">
+                  ❓ 常见问题
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  🚚 全国包邮
-                </a>
+                <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">
+                  📋 服务条款
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  🛡️ 正品保障
-                </a>
+                <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
+                  🔒 隐私政策
+                </Link>
               </li>
             </ul>
           </div>

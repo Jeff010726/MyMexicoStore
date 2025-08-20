@@ -78,26 +78,29 @@ ordersRouter.post('/', async (c) => {
       userId: body.userId,
       items: body.items,
       totalAmount: parseFloat(body.totalAmount),
-      status: 'pending',
+      status: body.paymentId ? 'paid' : 'pending', // 如果有支付ID则标记为已支付
       paymentMethod: body.paymentMethod,
+      paymentId: body.paymentId,
       shippingAddress: body.shippingAddress,
       billingAddress: body.billingAddress,
       createdAt: getCurrentTimestamp(),
       updatedAt: getCurrentTimestamp()
     };
 
+    // 包含paymentId字段的完整插入语句
     await c.env.DB.prepare(`
-      INSERT INTO orders (id, userId, items, totalAmount, status, paymentMethod, shippingAddress, billingAddress, createdAt, updatedAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO orders (id, userId, items, totalAmount, status, paymentMethod, paymentId, shippingAddress, billingAddress, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       order.id,
       order.userId,
       JSON.stringify(order.items),
       order.totalAmount,
       order.status,
-      order.paymentMethod,
+      order.paymentMethod || null,
+      order.paymentId || null,
       JSON.stringify(order.shippingAddress),
-      JSON.stringify(order.billingAddress),
+      JSON.stringify(order.billingAddress || order.shippingAddress),
       order.createdAt,
       order.updatedAt
     ).run();
@@ -109,7 +112,32 @@ ordersRouter.post('/', async (c) => {
   }
 });
 
-// 更新订单状态
+// 更新订单（兼容前端调用）
+ordersRouter.put('/:id', async (c) => {
+  try {
+    const id = c.req.param('id');
+    const body = await c.req.json();
+    
+    if (!body.status) {
+      return c.json(errorResponse('Status is required'), 400);
+    }
+
+    const result = await c.env.DB.prepare(`
+      UPDATE orders SET status = ?, updatedAt = ? WHERE id = ?
+    `).bind(body.status, getCurrentTimestamp(), id).run();
+    
+    if (result.changes === 0) {
+      return c.json(errorResponse('Order not found'), 404);
+    }
+
+    return c.json(successResponse(null, 'Order status updated successfully'));
+  } catch (error) {
+    console.error('Update order status error:', error);
+    return c.json(errorResponse('Failed to update order status'), 500);
+  }
+});
+
+// 更新订单状态（专用接口）
 ordersRouter.put('/:id/status', async (c) => {
   try {
     const id = c.req.param('id');
@@ -131,5 +159,40 @@ ordersRouter.put('/:id/status', async (c) => {
   } catch (error) {
     console.error('Update order status error:', error);
     return c.json(errorResponse('Failed to update order status'), 500);
+  }
+});
+
+// 导出订单数据
+ordersRouter.get('/export', async (c) => {
+  try {
+    const result = await c.env.DB.prepare('SELECT * FROM orders ORDER BY createdAt DESC').all();
+    const orders = result.results as Order[];
+
+    // 生成CSV格式数据
+    const csvHeaders = ['订单ID', '用户ID', '总金额', '状态', '支付方式', '创建时间', '更新时间'];
+    const csvRows = orders.map(order => [
+      order.id,
+      order.userId,
+      order.totalAmount,
+      order.status,
+      order.paymentMethod || '',
+      order.createdAt,
+      order.updatedAt
+    ]);
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvRows.map(row => row.join(','))
+    ].join('\n');
+
+    return new Response(csvContent, {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="orders.csv"'
+      }
+    });
+  } catch (error) {
+    console.error('Export orders error:', error);
+    return c.json(errorResponse('Failed to export orders'), 500);
   }
 });

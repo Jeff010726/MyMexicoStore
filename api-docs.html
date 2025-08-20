@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨西哥电商独立站 API 文档</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui.css" />
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        body {
+            margin:0;
+            background: #fafafa;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        .swagger-ui .topbar {
+            background-color: #2563eb;
+        }
+        .swagger-ui .topbar .download-url-wrapper .select-label {
+            color: #fff;
+        }
+        .swagger-ui .topbar .download-url-wrapper input[type=text] {
+            border: 2px solid #fff;
+        }
+        .swagger-ui .info .title {
+            color: #2563eb;
+        }
+        .custom-header {
+            background: linear-gradient(135deg, #2563eb 0%, #f97316 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        .custom-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .custom-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .api-info {
+            background: white;
+            padding: 20px;
+            margin: 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .api-info h2 {
+            color: #2563eb;
+            margin-top: 0;
+        }
+        .api-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .api-links a {
+            color: #2563eb;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #2563eb;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .api-links a:hover {
+            background-color: #2563eb;
+            color: white;
+        }
+        #swagger-ui {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-header">
+        <h1>墨西哥电商独立站 API 文档</h1>
+        <p>基于 Cloudflare Workers 的现代电商平台 RESTful API</p>
+    </div>
+    
+    <div class="api-info">
+        <h2>API 信息</h2>
+        <p><strong>基础URL:</strong> <code>https://ecommerce-api.jeff010726bd.workers.dev</code></p>
+        <p><strong>版本:</strong> v1.0.0</p>
+        <p><strong>认证方式:</strong> Bearer Token (JWT)</p>
+        <p><strong>联系邮箱:</strong> <a href="mailto:info@aimorelogy.com">info@aimorelogy.com</a></p>
+        
+        <div class="api-links">
+            <a href="./API_DOCUMENTATION.md" target="_blank">📖 完整文档</a>
+            <a href="./API_STANDARDS.md" target="_blank">📋 接口规范</a>
+            <a href="./api-tests.json" target="_blank">🧪 测试集合</a>
+            <a href="./openapi.yaml" target="_blank">📄 OpenAPI 规范</a>
+        </div>
+    </div>
+
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js"></script>
+    <script>
+        window.onload = function() {
+            // 获取当前页面的基础URL
+            const baseUrl = window.location.origin + window.location.pathname.replace('/api-docs.html', '');
+            
+            const ui = SwaggerUIBundle({
+                url: baseUrl + '/openapi.yaml',
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                defaultModelsExpandDepth: 1,
+                defaultModelExpandDepth: 1,
+                docExpansion: "list",
+                filter: true,
+                showExtensions: true,
+                showCommonExtensions: true,
+                tryItOutEnabled: true,
+                requestInterceptor: function(request) {
+                    // 自动添加认证头
+                    const token = localStorage.getItem('authToken');
+                    if (token && !request.url.includes('/users/register') && !request.url.includes('/users/login')) {
+                        request.headers['Authorization'] = 'Bearer ' + token;
+                    }
+                    return request;
+                },
+                responseInterceptor: function(response) {
+                    // 处理认证响应
+                    if (response.url.includes('/users/login') && response.status === 200) {
+                        try {
+                            const data = JSON.parse(response.text);
+                            if (data.success && data.data.token) {
+                                localStorage.setItem('authToken', data.data.token);
+                                console.log('Token saved to localStorage');
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse login response:', e);
+                        }
+                    }
+                    return response;
+                },
+                onComplete: function() {
+                    console.log('Swagger UI loaded successfully');
+                    
+                    // 添加自定义样式
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        .swagger-ui .info {
+                            display: none;
+                        }
+                        .swagger-ui .scheme-container {
+                            background: #f8fafc;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin-bottom: 20px;
+                        }
+                        .swagger-ui .auth-wrapper {
+                            background: #fef3c7;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin-bottom: 20px;
+                        }
+                        .swagger-ui .auth-wrapper .auth-container .auth-btn-wrapper {
+                            text-align: center;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    // 添加认证提示
+                    const authInfo = document.createElement('div');
+                    authInfo.innerHTML = `
+                        <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                            <h4 style="margin: 0 0 10px 0; color: #1e40af;">🔐 认证说明</h4>
+                            <p style="margin: 0; color: #1e40af;">
+                                1. 首先调用 <strong>POST /users/login</strong> 接口获取 JWT Token<br>
+                                2. Token 会自动保存到浏览器本地存储<br>
+                                3. 后续需要认证的接口会自动添加 Authorization 头部<br>
+                                4. 测试账号：test@example.com / 123456
+                            </p>
+                        </div>
+                    `;
+                    
+                    const swaggerContainer = document.querySelector('#swagger-ui');
+                    if (swaggerContainer && swaggerContainer.firstChild) {
+                        swaggerContainer.insertBefore(authInfo, swaggerContainer.firstChild);
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>

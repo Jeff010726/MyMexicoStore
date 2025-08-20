@@ -35,7 +35,7 @@ const AirwallexPayment = ({ orderId, amount, currency = 'MXN', onSuccess, onErro
   useEffect(() => {
     const fetchPaymentMethods = async () => {
       try {
-        const response = await fetch('/api/airwallex/payment-methods');
+        const response = await fetch('https://ecommerce-api.jeff010726bd.workers.dev/airwallex/payment-methods');
         const result = await response.json();
         if (result.success) {
           setPaymentMethods(result.data);
@@ -55,7 +55,7 @@ const AirwallexPayment = ({ orderId, amount, currency = 'MXN', onSuccess, onErro
   const createPaymentIntent = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/airwallex/create-payment-intent', {
+      const response = await fetch('https://ecommerce-api.jeff010726bd.workers.dev/airwallex/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const AirwallexPayment = ({ orderId, amount, currency = 'MXN', onSuccess, onErro
         };
       }
 
-      const response = await fetch('/api/airwallex/confirm-payment', {
+      const response = await fetch('https://ecommerce-api.jeff010726bd.workers.dev/airwallex/confirm-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

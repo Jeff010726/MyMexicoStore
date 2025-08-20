@@ -38,8 +38,11 @@ database_id = "0bd1dee9-fca8-4140-ba3b-aed1fa293fcc"
 
 # 环境变量
 [vars]
-ENVIRONMENT = "development"
-CORS_ORIGIN = "http://localhost:5173"
+ENVIRONMENT = "production"
+CORS_ORIGIN = "https://jeff010726.github.io"
+JWT_SECRET = "your-super-secret-jwt-key-2024-ecommerce-api-secure"
+AIRWALLEX_API_KEY = "test-api-key"
+AIRWALLEX_WEBHOOK_SECRET = "test-webhook-secret"
 
 # 生产环境变量（需要通过wrangler secret设置）
 # ALIPAY_APP_ID

@@ -1,0 +1,118 @@
+{
+  "summary": {
+    "startTime": "2025-08-20T07:43:11.580Z",
+    "endTime": "2025-08-20T07:43:11.584Z",
+    "totalTests": 12,
+    "passedTests": 12,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "successRate": "100.0"
+  },
+  "modules": {
+    "基础架构": {
+      "name": "基础架构",
+      "tests": [
+        {
+          "name": "项目构建输出检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        },
+        {
+          "name": "关键组件存在性检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        },
+        {
+          "name": "API配置检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        }
+      ],
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    "前端功能": {
+      "name": "前端功能",
+      "tests": [
+        {
+          "name": "SEO配置检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        },
+        {
+          "name": "支付集成检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        },
+        {
+          "name": "移动端适配检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        },
+        {
+          "name": "错误处理系统检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        }
+      ],
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "后端功能": {
+      "name": "后端功能",
+      "tests": [
+        {
+          "name": "后端API实现检查",
+          "status": "passed",
+          "duration": 1,
+          "error": null
+        },
+        {
+          "name": "数据库配置检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        }
+      ],
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "部署与性能": {
+      "name": "部署与性能",
+      "tests": [
+        {
+          "name": "部署配置检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        },
+        {
+          "name": "性能优化检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        },
+        {
+          "name": "API可访问性检查",
+          "status": "passed",
+          "duration": 0,
+          "error": null
+        }
+      ],
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "recommendations": []
+}

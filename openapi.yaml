@@ -1,0 +1,414 @@
+openapi: 3.0.3
+info:
+  title: 墨西哥电商独立站 API
+  description: 基于Cloudflare Workers的电商平台API接口规范
+  version: 1.0.0
+  contact:
+    email: info@aimorelogy.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://ecommerce-api.jeff010726bd.workers.dev
+    description: 生产环境
+  - url: http://localhost:8789
+    description: 开发环境
+
+security:
+  - BearerAuth: []
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - 用户管理
+      summary: 用户注册
+      description: 创建新用户账户
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  description: 用户姓名
+                  example: "张三"
+                email:
+                  type: string
+                  format: email
+                  description: 用户邮箱
+                  example: "zhangsan@example.com"
+                password:
+                  type: string
+                  minLength: 6
+                  description: 密码
+                  example: "123456"
+      responses:
+        '201':
+          description: 注册成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users/login:
+    post:
+      tags:
+        - 用户管理
+      summary: 用户登录
+      description: 用户身份验证
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "zhangsan@example.com"
+                password:
+                  type: string
+                  example: "123456"
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: 认证失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /products:
+    get:
+      tags:
+        - 商品管理
+      summary: 获取商品列表
+      description: 分页获取商品列表，支持筛选和排序
+      security: []
+      parameters:
+        - name: page
+          in: query
+          description: 页码
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: 每页数量
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 12
+        - name: category
+          in: query
+          description: 商品分类
+          schema:
+            type: string
+            enum: [kitchen, cleaning, storage, bathroom, laundry]
+        - name: search
+          in: query
+          description: 搜索关键词
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          description: 排序方式
+          schema:
+            type: string
+            enum: [price_asc, price_desc, name_asc, name_desc, created_desc]
+            default: created_desc
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+
+  /orders:
+    post:
+      tags:
+        - 订单管理
+      summary: 创建订单
+      description: 创建新的订单
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: 订单创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+
+  /analytics/dashboard:
+    get:
+      tags:
+        - 数据统计
+      summary: 获取仪表板数据
+      description: 获取管理后台仪表板统计数据
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "张三"
+        email:
+          type: string
+          format: email
+          example: "zhangsan@example.com"
+        phone:
+          type: string
+          example: "+52 123 456 7890"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T00:00:00Z"
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "多功能厨房收纳盒"
+        description:
+          type: string
+          example: "高品质塑料材质，多格设计"
+        price:
+          type: number
+          format: float
+          example: 299.99
+        category:
+          type: string
+          enum: [kitchen, cleaning, storage, bathroom, laundry]
+          example: "kitchen"
+        stock:
+          type: integer
+          example: 50
+        images:
+          type: array
+          items:
+            type: string
+          example: ["https://example.com/image1.jpg"]
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "ORD-20240101-001"
+        userId:
+          type: integer
+          example: 1
+        totalAmount:
+          type: number
+          format: float
+          example: 649.98
+        status:
+          type: string
+          enum: [pending, paid, shipped, delivered, cancelled]
+          example: "pending"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T00:00:00Z"
+
+    UserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/User'
+        message:
+          type: string
+          example: "操作成功"
+
+    LoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            user:
+              $ref: '#/components/schemas/User'
+        message:
+          type: string
+          example: "登录成功"
+
+    ProductListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'
+            pagination:
+              type: object
+              properties:
+                currentPage:
+                  type: integer
+                  example: 1
+                totalPages:
+                  type: integer
+                  example: 10
+                totalItems:
+                  type: integer
+                  example: 120
+
+    OrderResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Order'
+        message:
+          type: string
+          example: "订单创建成功"
+
+    DashboardResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            today:
+              type: object
+              properties:
+                todayOrders:
+                  type: integer
+                  example: 15
+                todayRevenue:
+                  type: number
+                  format: float
+                  example: 4500.00
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          example: "请求参数错误"
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - items
+        - shippingAddress
+        - paymentMethod
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: integer
+                example: 1
+              quantity:
+                type: integer
+                example: 2
+              price:
+                type: number
+                format: float
+                example: 299.99
+        shippingAddress:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "张三"
+            address:
+              type: string
+              example: "Av. Insurgentes Sur 123"
+        paymentMethod:
+          type: string
+          enum: [credit_card, debit_card, paypal]
+          example: "credit_card"
+
+tags:
+  - name: 用户管理
+    description: 用户注册、登录、资料管理等功能
+  - name: 商品管理
+    description: 商品展示、搜索、分类等功能
+  - name: 订单管理
+    description: 订单创建、查询、状态管理等功能
+  - name: 数据统计
+    description: 管理后台数据分析和统计功能

@@ -1,62 +1,157 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/theme-provider';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import PaymentSuccess from './pages/PaymentSuccess';
-import AdminLayout from './pages/admin/AdminLayout';
-import Dashboard from './pages/admin/Dashboard';
-import ProductManagement from './pages/admin/ProductManagement';
-import OrderManagement from './pages/admin/OrderManagement';
-import PageEditor from './pages/admin/PageEditor';
-import CustomerManagement from './pages/admin/CustomerManagement';
-import TemplateManagement from './pages/admin/TemplateManagement';
-import DynamicPage from './pages/DynamicPage';
-import Login from './pages/admin/Login';
+import MobileNav from './components/MobileNav';
+import BottomNav from './components/BottomNav';
+import ProtectedRoute from './components/ProtectedRoute';
+import { CartProvider } from './contexts/CartContext';
+import { useAuth } from './hooks/useAuth';
+
+// 懒加载页面组件 - 代码分割优化
+const Home = lazy(() => import('./pages/Home'));
+const Products = lazy(() => import('./pages/Products'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const Cart = lazy(() => import('./pages/Cart'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const UserCenter = lazy(() => import('./pages/UserCenter'));
+const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess'));
+const Contact = lazy(() => import('./pages/Contact'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const DynamicPage = lazy(() => import('./pages/DynamicPage'));
+
+// 管理后台组件懒加载
+const AdminLogin = lazy(() => import('./pages/admin/Login'));
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const ProductManagement = lazy(() => import('./pages/admin/ProductManagement'));
+const OrderManagement = lazy(() => import('./pages/admin/OrderManagement'));
+const CustomerManagement = lazy(() => import('./pages/admin/CustomerManagement'));
+const TemplateManagement = lazy(() => import('./pages/admin/TemplateManagement'));
+const PageEditor = lazy(() => import('./pages/admin/PageEditor'));
+
+// 性能优化的加载中组件
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-600">加载中...</p>
+    </div>
+  </div>
+);
+
+// 错误边界组件
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('页面加载错误:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">页面加载失败</h2>
+            <p className="text-gray-600 mb-4">请刷新页面重试</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              刷新页面
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 function App() {
+  const { isLoggedIn, logout } = useAuth();
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Router>
-        <div className="min-h-screen bg-background flex flex-col">
-          <Routes>
-            {/* 管理后台登录路由 */}
-            <Route path="/admin/login" element={<Login />} />
+        <CartProvider>
+          <ErrorBoundary>
+            <div className="min-h-screen flex flex-col">
+              {/* 桌面端导航 */}
+              <Header />
+              
+              {/* 移动端导航 */}
+              <MobileNav isLoggedIn={isLoggedIn} onLogout={logout} />
+              
+              <main className="flex-1 main-content">
+              <Suspense fallback={<LoadingSpinner />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/:id" element={<ProductDetail />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/terms" element={<TermsOfService />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/payment-success" element={<PaymentSuccess />} />
+                  <Route path="/pages/:slug" element={<DynamicPage />} />
+                  
+                  {/* 受保护的用户路由 */}
+                  <Route 
+                    path="/user-center" 
+                    element={
+                      <ProtectedRoute>
+                        <UserCenter />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  
+                  {/* 管理员路由 */}
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route 
+                    path="/admin" 
+                    element={
+                      <ProtectedRoute requireAdmin>
+                        <AdminLayout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<Dashboard />} />
+                    <Route path="products" element={<ProductManagement />} />
+                    <Route path="orders" element={<OrderManagement />} />
+                    <Route path="customers" element={<CustomerManagement />} />
+                    <Route path="templates" element={<TemplateManagement />} />
+                    <Route path="pages/edit/:id" element={<PageEditor />} />
+                  </Route>
+                </Routes>
+              </Suspense>
+            </main>
+            <Footer />
             
-            {/* 管理后台路由 */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="products" element={<ProductManagement />} />
-              <Route path="orders" element={<OrderManagement />} />
-              <Route path="customers" element={<CustomerManagement />} />
-              <Route path="templates" element={<TemplateManagement />} />
-              <Route path="editor" element={<PageEditor />} />
-            </Route>
-
-            {/* 动态页面路由 - 独立布局，不显示Header/Footer */}
-            <Route path="/page/:templateId" element={<DynamicPage />} />
-
-            {/* 前台路由 - 带Header和Footer */}
-            <Route path="/*" element={
-              <>
-                <Header />
-                <main className="flex-1">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/products/:id" element={<ProductDetail />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/payment/success" element={<PaymentSuccess />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </>
-            } />
-          </Routes>
-        </div>
+            {/* 移动端底部导航 */}
+            <BottomNav />
+          </div>
+        </ErrorBoundary>
+        </CartProvider>
       </Router>
     </ThemeProvider>
   );

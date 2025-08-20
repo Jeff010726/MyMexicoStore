@@ -4,8 +4,8 @@ import { successResponse, errorResponse, generateId } from '../utils/response';
 
 export const uploadRouter = new Hono<{ Bindings: Env }>();
 
-// 上传图片到R2存储
-uploadRouter.post('/image', async (c) => {
+// 上传图片到R2存储 - 兼容前端调用
+uploadRouter.post('/', async (c) => {
   try {
     const formData = await c.req.formData();
     const file = formData.get('file') as File;
@@ -38,8 +38,8 @@ uploadRouter.post('/image', async (c) => {
       },
     });
 
-    // 构建访问URL
-    const imageUrl = `https://your-r2-domain.com/${filePath}`;
+    // 构建访问URL - 使用模拟URL，实际部署时需要配置R2域名
+    const imageUrl = `https://ecommerce-images.jeff010726bd.workers.dev/${filePath}`;
 
     return c.json(successResponse({
       fileName,

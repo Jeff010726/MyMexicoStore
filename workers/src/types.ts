@@ -80,6 +80,7 @@ export interface User {
   email: string;
   name: string;
   phone?: string;
+  password?: string; // 可选，因为返回时不包含密码
   role: 'customer' | 'admin';
   addresses: Address[];
   createdAt: string;

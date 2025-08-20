@@ -15,16 +15,16 @@ export const API_CONFIG = {
     TEMPLATE_BY_ID: (id: string) => `/api/templates/${id}`,
     
     // 商品相关
-    PRODUCTS: '/api/products',
-    PRODUCT_BY_ID: (id: string) => `/api/products/${id}`,
+    PRODUCTS: '/products',
+    PRODUCT_BY_ID: (id: string) => `/products/${id}`,
     
     // 订单相关
-    ORDERS: '/api/orders',
-    ORDER_BY_ID: (id: string) => `/api/orders/${id}`,
+    ORDERS: '/orders',
+    ORDER_BY_ID: (id: string) => `/orders/${id}`,
     
     // 用户相关
-    USERS: '/api/users',
-    USER_BY_ID: (id: string) => `/api/users/${id}`,
+    USERS: '/users',
+    USER_BY_ID: (id: string) => `/users/${id}`,
     
     // 支付相关
     PAYMENT: '/api/payment',

@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
   phone TEXT,
+  password TEXT NOT NULL, -- 哈希后的密码
   role TEXT DEFAULT 'customer', -- customer, admin
   addresses TEXT, -- JSON数组
   createdAt TEXT NOT NULL,
