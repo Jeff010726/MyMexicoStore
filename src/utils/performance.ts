@@ -175,8 +175,10 @@ class PerformanceMonitor {
       console.log(`性能指标 ${name}: ${value.toFixed(2)}ms`);
     }
     
-    // 在生产环境下发送到分析服务
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    // 在生产环境下发送到分析服务，但不在GitHub Pages环境下发送
+    if (typeof window !== 'undefined' && 
+        window.location.hostname !== 'localhost' && 
+        !window.location.hostname.includes('github.io')) {
       this.sendToAnalytics(name, value);
     }
   }
@@ -184,7 +186,9 @@ class PerformanceMonitor {
   // 发送数据到分析服务
   private sendToAnalytics(name: string, value: number) {
     // 这里可以集成Google Analytics、百度统计等
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    if (typeof window !== 'undefined' && 
+        window.location.hostname !== 'localhost' && 
+        !window.location.hostname.includes('github.io')) {
       // 示例：发送到自定义分析端点
       fetch('/api/analytics/performance', {
         method: 'POST',
