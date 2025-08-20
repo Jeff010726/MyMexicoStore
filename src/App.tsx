@@ -44,45 +44,29 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// 错误边界组件
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
+// 导入错误边界组件
+import ErrorBoundary from './components/ErrorBoundary';
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('页面加载错误:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50">
-          <div className="text-center">
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">页面加载失败</h2>
-            <p className="text-gray-600 mb-4">请刷新页面重试</p>
-            <button 
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              刷新页面
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
+// 错误回退组件
+const ErrorFallback = ({ error, resetError }: { error: Error; resetError: () => void }) => {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="text-center">
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">页面加载失败</h2>
+        <p className="text-gray-600 mb-4">请刷新页面重试</p>
+        <button 
+          onClick={() => {
+            resetError();
+            window.location.reload();
+          }}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          刷新页面
+        </button>
+      </div>
+    </div>
+  );
+};
 
 function App() {
   const { isLoggedIn, logout } = useAuth();
@@ -91,7 +75,7 @@ function App() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Router>
         <CartProvider>
-          <ErrorBoundary>
+          <ErrorBoundary fallbackComponent={ErrorFallback}>
             <div className="min-h-screen flex flex-col">
               {/* 桌面端导航 */}
               <Header />
