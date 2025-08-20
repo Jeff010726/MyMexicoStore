@@ -13,7 +13,7 @@ export const usePerformanceMonitoring = () => ({
   getReport: () => ({})
 });
 
-export function withPerformanceTracking(fn: any, name: string) {
+export function withPerformanceTracking(fn: any) {
   return fn;
 }
 
