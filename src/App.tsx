@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/theme-provider';
 import Header from './components/Header';
@@ -48,7 +48,7 @@ const LoadingSpinner = () => (
 import ErrorBoundary from './components/ErrorBoundary';
 
 // 错误回退组件
-const ErrorFallback = ({ error, resetError }: { error: Error; resetError: () => void }) => {
+const ErrorFallback = ({ resetError }: { error: Error; resetError: () => void }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="text-center">
