@@ -5,6 +5,8 @@ import path from "path"
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // 为GitHub Pages设置基础路径
+  base: '/MyMexicoStore/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -45,8 +47,6 @@ export default defineConfig({
   },
   // 开发服务器优化
   server: {
-    // 启用HTTP/2
-    https: false,
     // 预热常用文件
     warmup: {
       clientFiles: [
