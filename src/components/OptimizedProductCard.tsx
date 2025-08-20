@@ -32,8 +32,8 @@ const OptimizedProductCard = memo<OptimizedProductCardProps>(({
     
     // 预加载商品详情页面
     import('../pages/ProductDetail').then(() => {
-      const loadTime = performance.now() - startTime;
-      performanceMonitor.recordMetric('PRODUCT_DETAIL_PRELOAD', loadTime);
+      // 性能监控已禁用
+      // const loadTime = performance.now() - startTime;
     });
   };
 
