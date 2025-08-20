@@ -20,7 +20,8 @@ export enum EventType {
   FILTER = 'filter',
   LOGIN = 'login',
   SIGNUP = 'signup',
-  ERROR = 'error'
+  ERROR = 'error',
+  PERFORMANCE = 'performance'
 }
 
 // 事件属性接口
@@ -547,7 +548,7 @@ export class AnalyticsService {
       setTimeout(() => {
         const metrics = this.getPerformanceMetrics();
         
-        this.trackEvent('performance', metrics);
+        this.trackEvent(EventType.PERFORMANCE, metrics);
       }, 0);
     });
   }

@@ -33,7 +33,17 @@ export const API_CONFIG = {
     // 管理后台
     ADMIN_PRODUCTS: '/api/admin/products',
     ADMIN_ORDERS: '/api/admin/orders',
-    ADMIN_UPLOAD: '/api/admin/upload'
+    ADMIN_UPLOAD: '/api/admin/upload',
+    
+    // 备份相关
+    BACKUPS: '/api/backups',
+    BACKUP_BY_ID: (id: string) => `/api/backups/${id}`,
+    
+    // 数据恢复
+    RESTORE_USERS: '/api/admin/restore/users',
+    RESTORE_PRODUCTS: '/api/admin/restore/products',
+    RESTORE_ORDERS: '/api/admin/restore/orders',
+    RESTORE_SETTINGS: '/api/admin/restore/settings'
   }
 };
 

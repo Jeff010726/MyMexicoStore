@@ -433,57 +433,5 @@ export class ErrorHandler {
   }
 }
 
-// 创建React错误边界组件的辅助函数
-export const createErrorBoundary = (
-  fallbackComponent: React.ComponentType<{ error: Error; resetError: () => void }>,
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void
-) => {
-  return class ErrorBoundary extends React.Component<
-    { children: React.ReactNode },
-    { hasError: boolean; error: Error | null }
-  > {
-    constructor(props: { children: React.ReactNode }) {
-      super(props);
-      this.state = { hasError: false, error: null };
-    }
-
-    static getDerivedStateFromError(error: Error) {
-      return { hasError: true, error };
-    }
-
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-      // 捕获错误并发送到错误处理系统
-      ErrorHandler.getInstance().captureRenderingError(
-        error,
-        this.constructor.name,
-        {},
-        ErrorSeverity.HIGH,
-        {
-          component: this.constructor.name,
-          additionalData: { errorInfo }
-        }
-      );
-
-      // 调用自定义错误处理函数
-      if (onError) {
-        onError(error, errorInfo);
-      }
-    }
-
-    resetError = () => {
-      this.setState({ hasError: false, error: null });
-    };
-
-    render() {
-      if (this.state.hasError && this.state.error) {
-        const FallbackComponent = fallbackComponent;
-        return <FallbackComponent error={this.state.error} resetError={this.resetError} />;
-      }
-
-      return this.props.children;
-    }
-  };
-};
-
 // 导出默认实例
 export default ErrorHandler.getInstance();
