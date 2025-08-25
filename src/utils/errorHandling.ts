@@ -69,40 +69,49 @@ export class ErrorHandler {
       return;
     }
     
-    // 设置全局未捕获异常处理器
-    window.addEventListener('error', (event) => {
-      this.handleError({
-        type: ErrorType.UNKNOWN,
-        message: event.message || 'Unknown error',
-        severity: ErrorSeverity.HIGH,
-        timestamp: new Date().toISOString(),
-        stack: event.error?.stack,
-        originalError: event.error
+    console.log('Initializing ErrorHandler...');
+    
+    try {
+      // 设置全局未捕获异常处理器
+      window.addEventListener('error', (event) => {
+        console.error('Global error caught:', event.message);
+        
+        this.handleError({
+          type: ErrorType.UNKNOWN,
+          message: event.message || 'Unknown error',
+          severity: ErrorSeverity.HIGH,
+          timestamp: new Date().toISOString(),
+          stack: event.error?.stack,
+          originalError: event.error
+        });
+        
+        // 不阻止默认处理，让错误显示在控制台
+        // event.preventDefault();
       });
       
-      // 防止默认处理
-      event.preventDefault();
-    });
-    
-    // 设置Promise未捕获异常处理器
-    window.addEventListener('unhandledrejection', (event) => {
-      const error = event.reason;
-      
-      this.handleError({
-        type: ErrorType.UNKNOWN,
-        message: error?.message || 'Unhandled promise rejection',
-        severity: ErrorSeverity.HIGH,
-        timestamp: new Date().toISOString(),
-        stack: error?.stack,
-        originalError: error
+      // 设置Promise未捕获异常处理器
+      window.addEventListener('unhandledrejection', (event) => {
+        const error = event.reason;
+        console.error('Unhandled promise rejection caught:', error);
+        
+        this.handleError({
+          type: ErrorType.UNKNOWN,
+          message: error?.message || 'Unhandled promise rejection',
+          severity: ErrorSeverity.HIGH,
+          timestamp: new Date().toISOString(),
+          stack: error?.stack,
+          originalError: error
+        });
+        
+        // 不阻止默认处理，让错误显示在控制台
+        // event.preventDefault();
       });
       
-      // 防止默认处理
-      event.preventDefault();
-    });
-    
-    this.isInitialized = true;
-    console.log('Global error handler initialized');
+      this.isInitialized = true;
+      console.log('Global error handler initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize error handler:', error);
+    }
   }
   
   // 捕获并处理错误
@@ -340,6 +349,22 @@ export class ErrorHandler {
   
   // 显示用户友好的错误消息
   private showUserFriendlyError(errorDetails: ErrorDetails): void {
+    // 开发环境下显示详细错误信息
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1'))) {
+      console.error('=== 详细错误信息 ===');
+      console.error('错误类型:', errorDetails.type);
+      console.error('错误消息:', errorDetails.message);
+      console.error('错误严重程度:', errorDetails.severity);
+      console.error('错误时间:', errorDetails.timestamp);
+      console.error('错误上下文:', errorDetails.context);
+      console.error('错误堆栈:', errorDetails.stack);
+      console.error('原始错误:', errorDetails.originalError);
+      console.error('===================');
+      
+      // 开发环境下不显示toast，让原始错误显示
+      return;
+    }
+    
     // 根据错误类型和严重程度选择适当的消息
     let userMessage = '抱歉，发生了一个错误。请稍后再试。';
     
