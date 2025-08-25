@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import MobileNav from './components/MobileNav';
 import BottomNav from './components/BottomNav';
 import ProtectedRoute from './components/ProtectedRoute';
-import { CartProvider } from './contexts/CartContext';
 import { useAuth } from './hooks/useAuth';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -76,7 +75,6 @@ function App() {
     return (
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <Router>
-          <CartProvider>
             <ErrorBoundary fallbackComponent={ErrorFallback}>
               <div className="min-h-screen flex flex-col">
                 {/* 桌面端导航 */}
@@ -148,7 +146,6 @@ function App() {
                 </ErrorBoundary>
               </div>
             </ErrorBoundary>
-          </CartProvider>
         </Router>
       </ThemeProvider>
     );
