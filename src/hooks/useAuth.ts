@@ -40,23 +40,40 @@ export const useAuth = () => {
       }
     } catch (error) {
       console.error('Auth check failed:', error);
-      logout();
+      // 不在这里调用 logout，避免在初始化时导航
+      setUser(null);
+      localStorage.removeItem('adminUser');
+      localStorage.removeItem('adminToken');
     } finally {
       setLoading(false);
     }
   };
 
   const login = (userData: AdminUser) => {
-    setUser(userData);
-    localStorage.setItem('adminUser', JSON.stringify(userData));
-    localStorage.setItem('adminToken', 'admin-token-' + Date.now());
+    try {
+      setUser(userData);
+      localStorage.setItem('adminUser', JSON.stringify(userData));
+      localStorage.setItem('adminToken', 'admin-token-' + Date.now());
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('adminUser');
-    localStorage.removeItem('adminToken');
-    navigate('/admin/login');
+    try {
+      setUser(null);
+      localStorage.removeItem('adminUser');
+      localStorage.removeItem('adminToken');
+      
+      // 安全地导航，检查当前路径
+      if (typeof window !== 'undefined' && window.location.pathname.includes('/admin')) {
+        navigate('/admin/login');
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // 如果导航失败，直接重定向
+      window.location.href = '/admin/login';
+    }
   };
 
   const hasPermission = (permission: string): boolean => {

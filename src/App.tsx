@@ -70,76 +70,135 @@ const ErrorFallback = ({ error, resetError }: { error: Error; resetError: () => 
 };
 
 function App() {
-  const { isLoggedIn, logout } = useAuth();
+  try {
+    const { isLoggedIn, logout } = useAuth();
 
-  return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <Router>
-        <CartProvider>
-          <ErrorBoundary fallbackComponent={ErrorFallback}>
-            <div className="min-h-screen flex flex-col">
-              {/* 桌面端导航 */}
-              <Header />
-              
-              {/* 移动端导航 */}
-              <MobileNav isLoggedIn={isLoggedIn} onLogout={logout} />
-              
-              <main className="flex-1 main-content">
-              <Suspense fallback={<LoadingSpinner />}>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/products/:id" element={<ProductDetail />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/privacy" element={<PrivacyPolicy />} />
-                  <Route path="/terms" element={<TermsOfService />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  <Route path="/payment-success" element={<PaymentSuccess />} />
-                  <Route path="/pages/:slug" element={<DynamicPage />} />
-                  
-                  {/* 受保护的用户路由 */}
-                  <Route 
-                    path="/user-center" 
-                    element={
-                      <ProtectedRoute>
-                        <UserCenter />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  
-                  {/* 管理员路由 */}
-                  <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route 
-                    path="/admin" 
-                    element={
-                      <ProtectedRoute requireAdmin>
-                        <AdminLayout />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route index element={<Dashboard />} />
-                    <Route path="products" element={<ProductManagement />} />
-                    <Route path="orders" element={<OrderManagement />} />
-                    <Route path="customers" element={<CustomerManagement />} />
-                    <Route path="templates" element={<TemplateManagement />} />
-                    <Route path="pages/edit/:id" element={<PageEditor />} />
-                  </Route>
-                </Routes>
-              </Suspense>
-            </main>
-            <Footer />
-            
-            {/* 移动端底部导航 */}
-            <BottomNav />
+    return (
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <Router>
+          <CartProvider>
+            <ErrorBoundary fallbackComponent={ErrorFallback}>
+              <div className="min-h-screen flex flex-col">
+                {/* 桌面端导航 */}
+                <ErrorBoundary fallbackComponent={ErrorFallback}>
+                  <Header />
+                </ErrorBoundary>
+                
+                {/* 移动端导航 */}
+                <ErrorBoundary fallbackComponent={ErrorFallback}>
+                  <MobileNav isLoggedIn={isLoggedIn} onLogout={logout} />
+                </ErrorBoundary>
+                
+                <main className="flex-1 main-content">
+                  <ErrorBoundary fallbackComponent={ErrorFallback}>
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/products" element={<Products />} />
+                        <Route path="/products/:id" element={<ProductDetail />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/privacy" element={<PrivacyPolicy />} />
+                        <Route path="/terms" element={<TermsOfService />} />
+                        <Route path="/faq" element={<FAQ />} />
+                        <Route path="/payment-success" element={<PaymentSuccess />} />
+                        <Route path="/pages/:slug" element={<DynamicPage />} />
+                        
+                        {/* 受保护的用户路由 */}
+                        <Route 
+                          path="/user-center" 
+                          element={
+                            <ProtectedRoute>
+                              <UserCenter />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        
+                        {/* 管理员路由 */}
+                        <Route path="/admin/login" element={<AdminLogin />} />
+                        <Route 
+                          path="/admin" 
+                          element={
+                            <ProtectedRoute requireAdmin>
+                              <AdminLayout />
+                            </ProtectedRoute>
+                          }
+                        >
+                          <Route index element={<Dashboard />} />
+                          <Route path="products" element={<ProductManagement />} />
+                          <Route path="orders" element={<OrderManagement />} />
+                          <Route path="customers" element={<CustomerManagement />} />
+                          <Route path="templates" element={<TemplateManagement />} />
+                          <Route path="pages/edit/:id" element={<PageEditor />} />
+                        </Route>
+                      </Routes>
+                    </Suspense>
+                  </ErrorBoundary>
+                </main>
+                
+                <ErrorBoundary fallbackComponent={ErrorFallback}>
+                  <Footer />
+                </ErrorBoundary>
+                
+                {/* 移动端底部导航 */}
+                <ErrorBoundary fallbackComponent={ErrorFallback}>
+                  <BottomNav />
+                </ErrorBoundary>
+              </div>
+            </ErrorBoundary>
+          </CartProvider>
+        </Router>
+      </ThemeProvider>
+    );
+  } catch (error) {
+    console.error('App 组件渲染错误:', error);
+    
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        padding: '20px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        backgroundColor: '#f8f9fa'
+      }}>
+        <div style={{
+          maxWidth: '600px',
+          textAlign: 'center',
+          background: 'white',
+          padding: '40px',
+          borderRadius: '8px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        }}>
+          <h1 style={{ color: '#dc3545', marginBottom: '20px' }}>应用组件错误</h1>
+          <p style={{ color: '#6c757d', marginBottom: '20px' }}>
+            应用主组件在渲染过程中遇到了问题。
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            style={{
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px'
+            }}
+          >
+            刷新页面
+          </button>
+          <div style={{ marginTop: '20px', fontSize: '12px', color: '#6c757d' }}>
+            错误详情: {error instanceof Error ? error.message : String(error)}
           </div>
-        </ErrorBoundary>
-        </CartProvider>
-      </Router>
-    </ThemeProvider>
-  );
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
